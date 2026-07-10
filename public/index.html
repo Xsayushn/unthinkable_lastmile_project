@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Last-Mile Logistics Tracker Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS for maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ================= AWS SIGN-IN PAGE (DEFAULT STATE) ================= -->
+  <div id="login-container" class="aws-login-page">
+    <div class="aws-login-left">
+      <div class="aws-logo-box">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="aws-svg-logo">
+          <path d="M60.2,56.7c-5.7,4.3-13.6,6.3-21,6.3c-10.9,0-20.9-4.2-26.6-11.4c-1.3-1.6-0.2-2.9,1.7-1.8c7.3,4.4,16.5,6.9,25.9,6.9 c6.9,0,14.6-1.6,20.8-5c1.7-1,2.9,0.5,1.2,2L60.2,56.7z" fill="#FF9900"/>
+          <path d="M62.6,50.1c-0.8-1.1-2.4-2.8-3.4-1.9c-0.9,0.9,0.3,2.4,0.9,3.3c0.8,1.2,1.8,2.7,2.8,3.9c0.3,0.3,0.6,0.3,0.7-0.1 c0.5-1.5,1.2-3.8,1.4-5.3c0.2-1.3-1-1.3-1.7-1.1C63.1,49.2,62.8,49.8,62.6,50.1z" fill="#FF9900"/>
+          <path d="M57.4,32.7c-3-3.6-7.8-5.8-13.2-5.8c-10.3,0-17.1,7.2-17.1,16.2c0,9.3,7.6,15.6,17.4,15.6c4.6,0,9-1.9,11.8-4.5V47.5 c0-6.1-3.6-9.1-9.6-9.1c-4.4,0-8.8,2.3-11.1,4.5c-0.5,0.5-0.9,0.1-0.7-0.4l1.3-3c0.2-0.5,0.7-0.7,1.2-1c2.8-2.1,7.6-3.8,12.3-3.8 c9.9,0,15.6,5.3,15.6,15.2v14.4c0,0.8,0.4,1.2,1,0.7c0.8-0.7,2.2-2.1,3-3c0.5-0.5,0.9-0.2,0.9,0.5v1.2c0,0.8-0.4,1.4-1,2 c-1.6,1.6-3.8,3.6-5.8,5c-1,0.7-1.9,0.1-1.9-1.1v-2c-3.1,3-7.9,4.8-13.1,4.8C30.4,72.7,19,64.2,19,53.2c0-11,10.2-21,24.9-21 c6.3,0,11.9,2.6,14.6,6c0.3,0.4,0.1,0.9-0.3,1l-2,1.2C55.9,34.5,57.7,33,57.4,32.7z" fill="#232F3E"/>
+        </svg>
+        <span class="aws-logo-ext">logistics</span>
+      </div>
+
+      <div class="aws-signin-card">
+        <h2 class="aws-card-title">IAM user sign in</h2>
+        
+        <div class="aws-info-alert">
+          <i data-lucide="info"></i>
+          <div>
+            <strong>Demo Accounts:</strong><br>
+            • Admin: <code>admin@tracker.com</code> / <code>admin123</code><br>
+            • Customer: <code>customer@tracker.com</code> / <code>customer123</code><br>
+            • Agent: <code>agent1@tracker.com</code> / <code>tracker123</code>
+          </div>
+        </div>
+
+        <form id="aws-login-form">
+          <div class="aws-form-group">
+            <label for="login-email">IAM username or Email address</label>
+            <input type="text" id="login-email" placeholder="username or email" required>
+          </div>
+
+          <div class="aws-form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required>
+          </div>
+
+          <div class="aws-form-group-row">
+            <div class="aws-checkbox-container">
+              <input type="checkbox" id="aws-show-password">
+              <label for="aws-show-password">Show Password</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-aws-primary" style="margin-top: 0.5rem;">Sign in</button>
+        </form>
+      </div>
+
+      <footer class="aws-footer">
+        <p>By continuing, you agree to the LastMile Customer Agreement or other agreement for LastMile services, and the Privacy Notice. This site uses essential cookies.</p>
+      </footer>
+    </div>
+
+    <div class="aws-login-right">
+      <div class="aws-promo-card">
+        <span class="aws-badge">NEW FEATURE</span>
+        <h1 class="aws-promo-title">Last-Mile Pune Geofencing</h1>
+        <p class="aws-promo-desc">Our automated geofencing calculation engine detects coordinates, computes volumetric weights in real-time, and allocates the nearest delivery executive using the Haversine formula.</p>
+        
+        <ul class="aws-feature-list">
+          <li><i data-lucide="check"></i> <span>Automated geofencing using GPS coordinates</span></li>
+          <li><i data-lucide="indian-rupee"></i> <span>Rupees (₹) standards & local rate matrix templates</span></li>
+          <li><i data-lucide="shield-alert"></i> <span>Reschedule workflow for failed delivery attempts</span></li>
+        </ul>
+
+        <div class="aws-hero-graphic">
+          <i data-lucide="map" class="aws-map-hero"></i>
+          <i data-lucide="navigation" class="aws-nav-hero"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= AUTHENTICATED DASHBOARD (HIDDEN BY DEFAULT) ================= -->
+  <div id="dashboard-container" class="dashboard-root" style="display:none;">
+    
+    <!-- Header Bar -->
+    <header class="app-header">
+      <div class="logo-container">
+        <div class="logo-icon"><i data-lucide="truck"></i></div>
+        <div class="logo-text">
+          <h1>LastMile</h1>
+          <span>Pune Operations</span>
+        </div>
+      <!-- Workspace Switcher (visible for Admin to directly access all 3 roles) -->
+      <div id="admin-workspace-switcher" class="workspace-switcher" style="display: none;">
+        <span class="switcher-label">Active Workspace:</span>
+        <div class="switcher-buttons">
+          <button class="btn-switch-view active" data-view="admin"><i data-lucide="shield"></i> Admin</button>
+          <button class="btn-switch-view" data-view="customer"><i data-lucide="user"></i> Customer</button>
+          <button class="btn-switch-view" data-view="agent"><i data-lucide="truck"></i> Agent</button>
+        </div>
+      </div>
+
+      <!-- Identity & Logout Button -->
+      <div class="user-identity-card">
+        <i data-lucide="user-check" class="user-check-icon"></i>
+        <div class="user-details">
+          <span class="user-name" id="display-user-name">Loading...</span>
+          <span class="user-role-label" id="display-user-role">Role</span>
+        </div>
+        <button class="btn btn-secondary btn-small" id="btn-logout" title="Sign Out">
+          <i data-lucide="log-out"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-container">
+      
+      <!-- Left Workspace Area -->
+      <section class="workspace-area">
+        
+        <!-- ================= CUSTOMER WORKSPACE ================= -->
+        <div id="workspace-customer" class="role-workspace">
+          <div class="workspace-header">
+            <h2>Customer Portal</h2>
+            <p>Book orders, get instant pricing estimates, and track your shipments live.</p>
+          </div>
+
+          <div class="customer-grid">
+            <!-- Order Form -->
+            <div class="panel booking-panel">
+              <h3 class="panel-title"><i data-lucide="package-plus"></i> Book New Delivery</h3>
+              
+              <form id="order-form" class="booking-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="order-type">Order Type</label>
+                    <select id="order-type" required>
+                      <option value="B2C" selected>B2C (Retail)</option>
+                      <option value="B2B">B2B (Enterprise)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="payment-type">Payment Type</label>
+                    <select id="payment-type" required>
+                      <option value="Prepaid" selected>Prepaid</option>
+                      <option value="COD">Cash on Delivery (COD)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group" id="group-on-behalf" style="display: none; margin-bottom: 0.5rem;">
+                  <label for="booking-on-behalf-select">Book on behalf of Customer</label>
+                  <select id="booking-on-behalf-select" class="form-control">
+                    <!-- Dynamically populated -->
+                  </select>
+                </div>
+
+                <div class="form-row dimensions-row">
+                  <div class="form-group">
+                    <label for="pkg-length">Length (cm)</label>
+                    <input type="number" id="pkg-length" min="1" value="20" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="pkg-width">Width (cm)</label>
+                    <input type="number" id="pkg-width" min="1" value="20" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="pkg-height">Height (cm)</label>
+                    <input type="number" id="pkg-height" min="1" value="15" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="pkg-weight">Weight (kg)</label>
+                    <input type="number" id="pkg-weight" step="0.1" min="0.1" value="1.5" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="pickup-address">Pickup Address (Pune Central / Shaniwar Wada)</label>
+                  <div class="input-with-action">
+                    <input type="text" id="pickup-address" value="Shaniwar Wada, Shivaji Nagar, Pune, Maharashtra" required>
+                    <button type="button" class="btn-coord-pick active" id="btn-pick-pickup" title="Click on the map to pin pickup location">
+                      <i data-lucide="map-pin"></i> Pin Pickup
+                    </button>
+                  </div>
+                  <span class="coord-label" id="pickup-coord-text">Lat: 18.5204, Lng: 73.8567</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="drop-address">Drop Address (Hinjawadi Phase 1 / IT Park)</label>
+                  <div class="input-with-action">
+                    <input type="text" id="drop-address" value="Hinjawadi Phase 1, IT Park, Pune, Maharashtra" required>
+                    <button type="button" class="btn-coord-pick" id="btn-pick-drop" title="Click on the map to pin drop location">
+                      <i data-lucide="map-pin"></i> Pin Drop
+                    </button>
+                  </div>
+                  <span class="coord-label" id="drop-coord-text">Lat: 18.5913, Lng: 73.7389</span>
+                </div>
+
+                <!-- Cost Calculator Display -->
+                <div class="price-calculator-display" id="pricing-breakdown">
+                  <div class="calc-header">Pricing Engine Breakdown</div>
+                  <div class="calc-row">
+                    <span>Volumetric Weight:</span>
+                    <strong id="calc-vol-weight">1.20 kg</strong>
+                  </div>
+                  <div class="calc-row">
+                    <span>Chargeable Weight:</span>
+                    <strong id="calc-charge-weight">1.50 kg</strong>
+                  </div>
+                  <div class="calc-row">
+                    <span>Route Distance:</span>
+                    <strong id="calc-distance">14.71 km</strong>
+                  </div>
+                  <div class="calc-row">
+                    <span>Zone Classification:</span>
+                    <strong id="calc-zone-type">INTER-ZONE</strong>
+                  </div>
+                  <div class="calc-row">
+                    <span>Base Delivery Charge:</span>
+                    <strong id="calc-delivery-charge">₹120.00</strong>
+                  </div>
+                  <div class="calc-row text-surcharge" id="calc-cod-row" style="display:none;">
+                    <span>COD Surcharge:</span>
+                    <strong id="calc-cod-charge">₹40.00</strong>
+                  </div>
+                  <hr>
+                  <div class="calc-row total-row">
+                    <span>Estimated Total Charge:</span>
+                    <strong id="calc-total-charge">₹120.00</strong>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full-width" id="btn-submit-order">
+                  <i data-lucide="check-circle-2"></i> Confirm and Place Order
+                </button>
+              </form>
+            </div>
+
+            <!-- My Orders List -->
+            <div class="panel orders-panel">
+              <h3 class="panel-title"><i data-lucide="package"></i> My Orders</h3>
+              <div class="table-wrapper">
+                <table id="customer-orders-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Date</th>
+                      <th>Route</th>
+                      <th>Type</th>
+                      <th>Cost</th>
+                      <th>Status</th>
+                      <th>Agent</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Filled dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ================= ADMIN WORKSPACE ================= -->
+        <div id="workspace-admin" class="role-workspace">
+          <div class="workspace-header">
+            <h2>Admin Control Center</h2>
+            <p>Configure rate cards, manage circular zones, allocate agents, and override deliveries.</p>
+          </div>
+
+          <!-- Metrics Cards -->
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-icon metric-purple"><i data-lucide="shopping-bag"></i></div>
+              <div class="metric-data">
+                <span class="metric-val" id="metric-total-orders">0</span>
+                <span class="metric-label">Total Orders</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon metric-blue"><i data-lucide="globe"></i></div>
+              <div class="metric-data">
+                <span class="metric-val" id="metric-total-zones">2</span>
+                <span class="metric-label">Active Zones</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon metric-green"><i data-lucide="users"></i></div>
+              <div class="metric-data">
+                <span class="metric-val" id="metric-active-agents">0</span>
+                <span class="metric-label">Available Agents</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon metric-amber"><i data-lucide="clock"></i></div>
+              <div class="metric-data">
+                <span class="metric-val" id="metric-pending-orders">0</span>
+                <span class="metric-label">Pending Assign</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Tabs Layout -->
+          <div class="admin-tabs-container">
+            <div class="tabs-nav">
+              <button class="tab-nav-btn active" data-tab="admin-tab-orders">Order Operations</button>
+              <button class="tab-nav-btn" data-tab="admin-tab-rates">Rate Card Matrix</button>
+              <button class="tab-nav-btn" data-tab="admin-tab-zones">Circular Zones</button>
+              <button class="tab-nav-btn" data-tab="admin-tab-agents">Agent Registry</button>
+            </div>
+
+            <!-- Tab Content: Orders -->
+            <div id="admin-tab-orders" class="tab-content active">
+              <div class="filter-bar">
+                <div class="filter-group">
+                  <label for="admin-filter-status">Status</label>
+                  <select id="admin-filter-status">
+                    <option value="">All Statuses</option>
+                    <option value="Placed">Placed</option>
+                    <option value="Assigned">Assigned</option>
+                    <option value="Picked Up">Picked Up</option>
+                    <option value="In Transit">In Transit</option>
+                    <option value="Out for Delivery">Out for Delivery</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Failed">Failed</option>
+                    <option value="Rescheduled">Rescheduled</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label for="admin-filter-zone">Zone</label>
+                  <select id="admin-filter-zone">
+                    <option value="">All Zones</option>
+                    <!-- Filled dynamically -->
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label for="admin-filter-agent">Agent</label>
+                  <select id="admin-filter-agent">
+                    <option value="">All Agents</option>
+                    <!-- Filled dynamically -->
+                  </select>
+                </div>
+                <button class="btn btn-secondary btn-icon-only" id="btn-refresh-admin-orders" title="Refresh orders">
+                  <i data-lucide="rotate-cw"></i>
+                </button>
+              </div>
+
+              <div class="table-wrapper">
+                <table id="admin-orders-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Customer</th>
+                      <th>Type</th>
+                      <th>Charge</th>
+                      <th>Status</th>
+                      <th>Assigned Agent</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab Content: Rate Card Config -->
+            <div id="admin-tab-rates" class="tab-content">
+              <p class="tab-description">Modify base price, incremental rates, and Cash on Delivery surcharges. Edits commit live to database.</p>
+              <div class="rate-cards-grid" id="rates-editor-container">
+                <!-- Dynamically populated rate card cards -->
+              </div>
+            </div>
+
+            <!-- Tab Content: Zone Config -->
+            <div id="admin-tab-zones" class="tab-content">
+              <div class="zone-setup-split">
+                <!-- Add Zone Form -->
+                <div class="zone-form-panel">
+                  <h4>Create New Circular Zone</h4>
+                  <form id="admin-zone-form" class="simple-form">
+                    <div class="form-group">
+                      <label for="zone-name">Zone Name</label>
+                      <input type="text" id="zone-name" placeholder="e.g. Zone C (Delhi South)" required>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="zone-lat">Center Latitude</label>
+                        <input type="number" step="0.0001" id="zone-lat" value="28.5355" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="zone-lng">Center Longitude</label>
+                        <input type="number" step="0.0001" id="zone-lng" value="77.3910" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="zone-radius">Radius (kilometers)</label>
+                      <input type="number" step="0.1" id="zone-radius" value="3.0" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="zone-desc">Description</label>
+                      <textarea id="zone-desc" rows="2" placeholder="Geographic details..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="plus-circle"></i> Add Zone to Database</button>
+                  </form>
+                </div>
+
+                <!-- Zone List -->
+                <div class="zone-list-panel">
+                  <h4>Registered Circular Zones</h4>
+                  <div class="table-wrapper">
+                    <table class="data-table" id="admin-zones-table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Center (Lat, Lng)</th>
+                          <th>Radius</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Filled dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Agent Registry -->
+            <div id="admin-tab-agents" class="tab-content">
+              <div class="table-wrapper">
+                <table id="admin-agents-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Agent ID</th>
+                      <th>Name</th>
+                      <th>Status</th>
+                      <th>Current Latitude</th>
+                      <th>Current Longitude</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ================= AGENT WORKSPACE ================= -->
+        <div id="workspace-agent" class="role-workspace">
+          <div class="workspace-header">
+            <h2>Agent Delivery Dashboard</h2>
+            <p>View your active delivery sheet, update locations, and flag order statuses.</p>
+          </div>
+
+          <div class="agent-dashboard-layout">
+            <!-- Active tasks list -->
+            <div class="panel agent-tasks-panel">
+              <h3 class="panel-title"><i data-lucide="clipboard-list"></i> My Assigned Deliveries</h3>
+              <div id="agent-orders-container" class="agent-orders-cards">
+                <!-- Empty state or cards filled dynamically -->
+              </div>
+            </div>
+
+            <!-- Agent location manager -->
+            <div class="panel agent-location-panel">
+              <h3 class="panel-title"><i data-lucide="map-pin"></i> Live Location Simulator</h3>
+              <p class="panel-note">Simulate your movement. Turn on coordinate placement and click on the map to relocate yourself.</p>
+              
+              <div class="agent-status-toggle">
+                <span class="status-label">Duty Status:</span>
+                <select id="agent-duty-status">
+                  <option value="AVAILABLE">AVAILABLE (On Duty)</option>
+                  <option value="BUSY">BUSY (Active Delivery)</option>
+                  <option value="OFFLINE">OFFLINE (Off Duty)</option>
+                </select>
+              </div>
+              
+              <div class="agent-location-display">
+                <div class="location-coord">
+                  <span>Lat:</span> <strong id="agent-lat-display">28.6300</strong>
+                </div>
+                <div class="location-coord">
+                  <span>Lng:</span> <strong id="agent-lng-display">77.2200</strong>
+                </div>
+              </div>
+              
+              <button class="btn btn-secondary btn-full-width" id="btn-agent-pin-mode">
+                <i data-lucide="map"></i> Toggle Map Location Placement
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Map & Track Area -->
+      <section class="map-track-area">
+        <!-- Interactive Leaflet Map -->
+        <div class="map-wrapper">
+          <div id="map-container"></div>
+          <div class="map-legend">
+            <div class="legend-item"><span class="legend-circle legend-zone-a"></span> Zone A (5km)</div>
+            <div class="legend-item"><span class="legend-circle legend-zone-b"></span> Zone B (4km)</div>
+            <div class="legend-item"><i data-lucide="map-pin" class="pin-icon pin-pickup"></i> Pickup</div>
+            <div class="legend-item"><i data-lucide="map-pin" class="pin-icon pin-drop"></i> Drop</div>
+            <div class="legend-item"><i data-lucide="navigation" class="pin-icon pin-agent"></i> Agent</div>
+          </div>
+        </div>
+
+        <!-- Live Order History & Tracking Logs -->
+        <div class="panel tracking-timeline-panel" id="order-history-panel" style="display:none;">
+          <div class="timeline-header">
+            <h3><i data-lucide="history"></i> Lifecycle History for #<span id="history-order-id"></span></h3>
+            <button class="close-btn" id="btn-close-history">&times;</button>
+          </div>
+          <div class="tracking-summary-card">
+            <div class="summary-line">Route: <span id="history-route-text">New Delhi to Noida</span></div>
+            <div class="summary-line">Status: <span class="badge" id="history-status-badge">Placed</span></div>
+          </div>
+          <div class="timeline" id="history-timeline-events">
+            <!-- Dynamic timeline items -->
+          </div>
+        </div>
+
+        <!-- SMS & Email Mock Log Console -->
+        <div class="panel notification-console-panel">
+          <h3 class="panel-title"><i data-lucide="message-square"></i> Customer Communication Inbox (Mock Logs)</h3>
+          <div class="console-logs" id="notification-logs-container">
+            <!-- List of sent messages -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Reschedule Modal -->
+  <div class="modal" id="reschedule-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Reschedule Delivery</h3>
+        <button class="close-btn" id="btn-close-modal">&times;</button>
+      </div>
+      <form id="reschedule-form">
+        <input type="hidden" id="reschedule-order-id">
+        <div class="form-group">
+          <label for="reschedule-date">Select Reschedule Date</label>
+          <input type="date" id="reschedule-date" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full-width">Submit Reschedule</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Manual Assignment Modal -->
+  <div class="modal" id="assign-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Assign Delivery Agent</h3>
+        <button class="close-btn" id="btn-close-assign-modal">&times;</button>
+      </div>
+      <form id="assign-form">
+        <input type="hidden" id="assign-order-id">
+        <div class="form-group">
+          <label for="assign-agent-select">Select Available Agent</label>
+          <select id="assign-agent-select" required>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-trigger-auto-assign">Auto-Assign Nearest</button>
+          <button type="submit" class="btn btn-primary">Manually Assign</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Leaflet Javascript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Main Frontend JS Logic -->
+  <script src="app.js"></script>
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
