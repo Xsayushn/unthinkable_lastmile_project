@@ -129,7 +129,7 @@ async function seedDatabase() {
     {
       id: 'agt_2',
       userId: 'usr_agent2',
-      name: 'Suresh Singh ',
+      name: 'Suresh Singh',
       status: 'AVAILABLE',
       currentLat: 18.5910, // Near Hinjawadi Sec 1
       currentLng: 73.7380
@@ -137,7 +137,7 @@ async function seedDatabase() {
     {
       id: 'agt_3',
       userId: 'usr_agent3',
-      name: 'Amit Patel ',
+      name: 'Amit Patel',
       status: 'OFFLINE',
       currentLat: 18.5089, // Hadapsar area
       currentLng: 73.9259
@@ -145,7 +145,7 @@ async function seedDatabase() {
     {
       id: 'agt_4',
       userId: 'usr_agent4',
-      name: 'Ayush ',
+      name: 'Ayush',
       status: 'AVAILABLE',
       currentLat: 18.5089, // Hadapsar area
       currentLng: 73.9259
