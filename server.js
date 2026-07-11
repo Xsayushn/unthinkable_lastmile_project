@@ -67,17 +67,34 @@ const allowedOrigins = [
   `http://localhost:${PORT}`,
   'http://127.0.0.1:' + PORT
 ];
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow same-origin requests (no Origin header) and whitelisted origins
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+if (process.env.RENDER_EXTERNAL_URL) {
+  allowedOrigins.push(process.env.RENDER_EXTERNAL_URL);
+}
+
+const corsOptionsDelegate = (req, callback) => {
+  const origin = req.header('Origin');
+  let isAllowed = false;
+  
+  if (!origin) {
+    isAllowed = true;
+  } else {
+    // Check whitelisted origins
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes(origin + '/')) {
+      isAllowed = true;
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // Dynamically check if same-origin (host header matches origin)
+      try {
+        const originUrl = new URL(origin);
+        if (originUrl.host === req.headers.host) {
+          isAllowed = true;
+        }
+      } catch (e) {}
     }
-  },
-  credentials: true
-}));
+  }
+
+  callback(null, { origin: isAllowed, credentials: true });
+};
+app.use(cors(corsOptionsDelegate));
 
 // ── Body Parsing ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }));

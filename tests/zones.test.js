@@ -53,7 +53,9 @@ async function registerCustomer(email) {
 let adminCookie, customerCookie;
 
 beforeAll(async () => {
-  if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  try {
+    if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  } catch (err) {}
   invalidateCache();
 
   seedAdminUser();
@@ -62,7 +64,9 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-  if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  try {
+    if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  } catch (err) {}
 });
 
 // ── GET /api/zones ────────────────────────────────────────────────────────────

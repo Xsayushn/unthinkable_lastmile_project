@@ -57,14 +57,18 @@ function seedOrdersDb() {
 }
 
 beforeAll(async () => {
-  if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  try {
+    if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  } catch (err) {}
   invalidateCache();
   seedOrdersDb();
   customerCookie = await registerAndLogin('cust@orders.com', 'pass12345', 'customer', 'Order Customer');
 });
 
 afterAll(() => {
-  if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  try {
+    if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
+  } catch (err) {}
 });
 
 // ── POST /api/orders/estimate ─────────────────────────────────────────────────

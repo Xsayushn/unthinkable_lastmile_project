@@ -18,20 +18,22 @@ process.env.DB_PATH = TEST_DB_PATH;
 const app = require('../server');
 const { invalidateCache } = require('../db-helper');
 
-// ── Setup/Teardown ─────────────────────────────────────────────────────────────
-
 beforeEach(() => {
   // Reset the test database before each test
-  if (fs.existsSync(TEST_DB_PATH)) {
-    fs.unlinkSync(TEST_DB_PATH);
-  }
+  try {
+    if (fs.existsSync(TEST_DB_PATH)) {
+      fs.unlinkSync(TEST_DB_PATH);
+    }
+  } catch (err) {}
   invalidateCache();
 });
 
 afterAll(() => {
-  if (fs.existsSync(TEST_DB_PATH)) {
-    fs.unlinkSync(TEST_DB_PATH);
-  }
+  try {
+    if (fs.existsSync(TEST_DB_PATH)) {
+      fs.unlinkSync(TEST_DB_PATH);
+    }
+  } catch (err) {}
 });
 
 // ── POST /api/auth/register ───────────────────────────────────────────────────
