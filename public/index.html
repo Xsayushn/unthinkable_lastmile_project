@@ -17,6 +17,12 @@
 </head>
 <body>
 
+  <!-- Skip Navigation Link (Accessibility) -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ARIA Live Region for Toast Notifications (Screen Readers) -->
+  <div id="toast-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
   <!-- ================= AWS SIGN-IN PAGE (DEFAULT STATE) ================= -->
   <div id="login-container" class="aws-login-page">
     <div class="aws-login-left">
@@ -42,20 +48,22 @@
           </div>
         </div>
 
-        <form id="aws-login-form">
+        <form id="aws-login-form" class="booking-form" aria-label="IAM Sign In Form" novalidate>
           <div class="aws-form-group">
             <label for="login-email">IAM username or Email address</label>
-            <input type="text" id="login-email" placeholder="username or email" required>
+            <input type="text" id="login-email" placeholder="username or email" required
+                   autocomplete="username" aria-required="true">
           </div>
 
           <div class="aws-form-group">
             <label for="login-password">Password</label>
-            <input type="password" id="login-password" required>
+            <input type="password" id="login-password" required
+                   autocomplete="current-password" aria-required="true">
           </div>
 
           <div class="aws-form-group-row">
             <div class="aws-checkbox-container">
-              <input type="checkbox" id="aws-show-password">
+              <input type="checkbox" id="aws-show-password" aria-controls="login-password">
               <label for="aws-show-password">Show Password</label>
             </div>
           </div>
@@ -118,14 +126,14 @@
           <span class="user-name" id="display-user-name">Loading...</span>
           <span class="user-role-label" id="display-user-role">Role</span>
         </div>
-        <button class="btn btn-secondary btn-small" id="btn-logout" title="Sign Out">
-          <i data-lucide="log-out"></i> Logout
+        <button class="btn btn-secondary btn-small" id="btn-logout" aria-label="Sign out of LastMile Logistics">
+          <i data-lucide="log-out" aria-hidden="true"></i> Logout
         </button>
       </div>
     </header>
 
     <!-- Main Container -->
-    <main class="app-container">
+    <main class="app-container" id="main-content" tabindex="-1">
       
       <!-- Left Workspace Area -->
       <section class="workspace-area">
@@ -531,8 +539,8 @@
         <!-- Live Order History & Tracking Logs -->
         <div class="panel tracking-timeline-panel" id="order-history-panel" style="display:none;">
           <div class="timeline-header">
-            <h3><i data-lucide="history"></i> Lifecycle History for #<span id="history-order-id"></span></h3>
-            <button class="close-btn" id="btn-close-history">&times;</button>
+            <h3><i data-lucide="history" aria-hidden="true"></i> Lifecycle History for #<span id="history-order-id"></span></h3>
+            <button class="close-btn" id="btn-close-history" aria-label="Close order history panel">&times;</button>
           </div>
           <div class="tracking-summary-card">
             <div class="summary-line">Route: <span id="history-route-text">New Delhi to Noida</span></div>
@@ -556,17 +564,17 @@
   </div>
 
   <!-- Reschedule Modal -->
-  <div class="modal" id="reschedule-modal">
+  <div class="modal" id="reschedule-modal" role="dialog" aria-modal="true" aria-labelledby="reschedule-modal-title">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Reschedule Delivery</h3>
-        <button class="close-btn" id="btn-close-modal">&times;</button>
+        <h3 id="reschedule-modal-title">Reschedule Delivery</h3>
+        <button class="close-btn" id="btn-close-modal" aria-label="Close reschedule dialog">&times;</button>
       </div>
-      <form id="reschedule-form">
+      <form id="reschedule-form" aria-label="Reschedule Delivery Form">
         <input type="hidden" id="reschedule-order-id">
         <div class="form-group">
           <label for="reschedule-date">Select Reschedule Date</label>
-          <input type="date" id="reschedule-date" required>
+          <input type="date" id="reschedule-date" required aria-required="true">
         </div>
         <button type="submit" class="btn btn-primary btn-full-width">Submit Reschedule</button>
       </form>
@@ -574,17 +582,17 @@
   </div>
 
   <!-- Manual Assignment Modal -->
-  <div class="modal" id="assign-modal">
+  <div class="modal" id="assign-modal" role="dialog" aria-modal="true" aria-labelledby="assign-modal-title">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Assign Delivery Agent</h3>
-        <button class="close-btn" id="btn-close-assign-modal">&times;</button>
+        <h3 id="assign-modal-title">Assign Delivery Agent</h3>
+        <button class="close-btn" id="btn-close-assign-modal" aria-label="Close assignment dialog">&times;</button>
       </div>
-      <form id="assign-form">
+      <form id="assign-form" aria-label="Agent Assignment Form">
         <input type="hidden" id="assign-order-id">
         <div class="form-group">
           <label for="assign-agent-select">Select Available Agent</label>
-          <select id="assign-agent-select" required>
+          <select id="assign-agent-select" required aria-required="true">
             <!-- Dynamically populated -->
           </select>
         </div>

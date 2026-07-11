@@ -5,13 +5,21 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node test-pricing.js"
+    "test": "jest --coverage",
+    "test:legacy": "node test-pricing.js",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }

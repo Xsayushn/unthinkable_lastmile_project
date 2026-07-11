@@ -64,10 +64,20 @@ async function apiRequest(url, method = 'GET', body = null) {
   }
 }
 
-// Toast Alert
+// Toast Alert — announces to screen readers via aria-live region
 function showToast(message, type = 'success') {
+  // Announce to screen readers first
+  const liveRegion = document.getElementById('toast-live-region');
+  if (liveRegion) {
+    liveRegion.textContent = '';
+    // Slight delay forces screen readers to re-announce even identical messages
+    setTimeout(() => { liveRegion.textContent = message; }, 50);
+  }
+
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
   toast.innerHTML = `
     <div class="toast-body">
       <span>${message}</span>
@@ -756,7 +766,7 @@ function setupOrderActionListeners() {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       document.getElementById('reschedule-date').value = tomorrow.toISOString().split('T')[0];
-      document.getElementById('reschedule-modal').classList.add('active');
+      openModal('reschedule-modal');
     });
   });
 
@@ -777,7 +787,7 @@ function setupOrderActionListeners() {
         });
       }
 
-      document.getElementById('assign-modal').classList.add('active');
+      openModal('assign-modal');
     });
   });
 
@@ -963,6 +973,65 @@ async function updateAgentLocation(lat, lng) {
     if (btnAgentMode) btnAgentMode.classList.remove('active');
     refreshAllData();
   } catch (error) {}
+}
+
+// ─── Accessibility Utilities ───────────────────────────────────────────────────
+
+/**
+ * Returns all keyboard-focusable elements within a container.
+ */
+function getFocusableElements(container) {
+  return Array.from(container.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
+    'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  ));
+}
+
+/**
+ * Trap focus within a modal element.
+ * @param {HTMLElement} modal
+ * @param {KeyboardEvent} e
+ */
+function trapFocus(modal, e) {
+  const focusable = getFocusableElements(modal);
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last  = focusable[focusable.length - 1];
+
+  if (e.key === 'Tab') {
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+    }
+  }
+}
+
+// Track which element triggered a modal open (to restore focus on close)
+let _lastFocusedElement = null;
+
+/**
+ * Open a modal: add .active, set ARIA, focus first element, save trigger.
+ */
+function openModal(modalId) {
+  _lastFocusedElement = document.activeElement;
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.add('active');
+  modal.removeAttribute('aria-hidden');
+  const focusable = getFocusableElements(modal);
+  if (focusable.length > 0) focusable[0].focus();
+}
+
+/**
+ * Close a modal: remove .active, set ARIA hidden, restore focus.
+ */
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.remove('active');
+  modal.setAttribute('aria-hidden', 'true');
+  if (_lastFocusedElement) { _lastFocusedElement.focus(); _lastFocusedElement = null; }
 }
 
 // --- DOM INTERACTION HANDLERS ---
@@ -1165,18 +1234,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Modal closings
+  // Modal closings — use closeModal() to restore focus on close
   document.getElementById('btn-close-history').addEventListener('click', () => {
     document.getElementById('order-history-panel').style.display = 'none';
     activeOrderHistoryId = null;
+    if (_lastFocusedElement) { _lastFocusedElement.focus(); _lastFocusedElement = null; }
   });
 
   document.getElementById('btn-close-modal').addEventListener('click', () => {
-    document.getElementById('reschedule-modal').classList.remove('active');
+    closeModal('reschedule-modal');
   });
 
   document.getElementById('btn-close-assign-modal').addEventListener('click', () => {
-    document.getElementById('assign-modal').classList.remove('active');
+    closeModal('assign-modal');
+  });
+
+  // Global: Escape key closes open modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const rescheduleModal = document.getElementById('reschedule-modal');
+      const assignModal     = document.getElementById('assign-modal');
+      const historyPanel    = document.getElementById('order-history-panel');
+      if (rescheduleModal?.classList.contains('active')) closeModal('reschedule-modal');
+      else if (assignModal?.classList.contains('active'))     closeModal('assign-modal');
+      else if (historyPanel?.style.display === 'flex') {
+        historyPanel.style.display = 'none';
+        activeOrderHistoryId = null;
+        if (_lastFocusedElement) { _lastFocusedElement.focus(); _lastFocusedElement = null; }
+      }
+    }
+
+    // Tab-trap inside open modals
+    const rescheduleModal = document.getElementById('reschedule-modal');
+    const assignModal     = document.getElementById('assign-modal');
+    if (rescheduleModal?.classList.contains('active')) trapFocus(rescheduleModal, e);
+    else if (assignModal?.classList.contains('active'))     trapFocus(assignModal, e);
   });
 
   // Customer reschedule submit
@@ -1187,7 +1279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await apiRequest(`/api/orders/${orderId}/reschedule`, 'POST', { rescheduleDate: date });
-      document.getElementById('reschedule-modal').classList.remove('active');
+      closeModal('reschedule-modal');
       showToast('Order rescheduled. Agent auto-allocation triggered.');
       refreshAllData();
       if (activeOrderHistoryId === orderId) {
@@ -1209,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await apiRequest(`/api/orders/${orderId}/assign`, 'POST', { agentId });
-      document.getElementById('assign-modal').classList.remove('active');
+      closeModal('assign-modal');
       showToast('Agent allocated successfully.');
       refreshAllData();
     } catch (error) {}
@@ -1220,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const orderId = document.getElementById('assign-order-id').value;
     try {
       await apiRequest(`/api/orders/${orderId}/assign`, 'POST', { auto: true });
-      document.getElementById('assign-modal').classList.remove('active');
+      closeModal('assign-modal');
       showToast('Agent auto-allocated based on closest physical distance.');
       refreshAllData();
     } catch (error) {}
