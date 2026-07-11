@@ -17,12 +17,17 @@ A modern, responsive delivery management and tracking platform built for Pune op
    npm install
    ```
 
-### Running the Application
+### Running the Application Locally
 To start the Express server and serve the front-end dashboard:
 ```bash
 npm start
 ```
-Once started, open [http://localhost:3000](http://localhost:3000) in your web browser. You will be greeted by the AWS IAM-style sign-in screen.
+Once started, open [http://localhost:3000](http://localhost:3000) in your web browser.
+
+### Live Deployment
+The application is also deployed and accessible live at:
+[https://unthinkable-lastmile-project.onrender.com/](https://unthinkable-lastmile-project.onrender.com/)
+
 
 ### Running Automated Pricing Tests
 We have built an automated test runner for the logistics and pricing formulas scaled to Rupees and Pune geofences:
