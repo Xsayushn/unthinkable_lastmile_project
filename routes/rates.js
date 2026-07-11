@@ -14,7 +14,7 @@ router.get('/', authenticateToken, (req, res) => {
 
 // PUT /api/rates/:id — Edit rate card values (Admin only)
 router.put('/:id', authenticateToken, requireAdmin, (req, res) => {
-  const { basePrice, baseWeightKg, perKgRate, codSurchargeFlat, codSurchargePct } = req.body;
+  const { basePrice, baseWeightKg, perKgRate, codSurchargeFlat, codSurchargePct, baseDistanceKm, perKmRateDistance } = req.body;
 
   const db = readDb();
   const rateCard = db.rateCards.find(rc => rc.id === req.params.id);
@@ -47,6 +47,16 @@ router.put('/:id', authenticateToken, requireAdmin, (req, res) => {
     const v = parseFloat(codSurchargePct);
     if (isNaN(v) || v < 0 || v > 100) return res.status(400).json({ error: 'codSurchargePct must be between 0 and 100.' });
     rateCard.codSurchargePct = v;
+  }
+  if (baseDistanceKm != null) {
+    const v = validatePositiveNumber(baseDistanceKm);
+    if (v === null) return res.status(400).json({ error: 'baseDistanceKm must be a positive number.' });
+    rateCard.baseDistanceKm = v;
+  }
+  if (perKmRateDistance != null) {
+    const v = validatePositiveNumber(perKmRateDistance);
+    if (v === null) return res.status(400).json({ error: 'perKmRateDistance must be a positive number.' });
+    rateCard.perKmRateDistance = v;
   }
 
   writeDb(db);

@@ -19,10 +19,10 @@ const mockZones = [
 ];
 
 const mockRateCards = [
-  { id: 'rate_b2b_intra', orderType: 'B2B', zoneType: 'INTRA', basePrice: 100.0, baseWeightKg: 5.0, perKgRate: 15.0,  codSurchargeFlat: 50.0,  codSurchargePct: 1.0 },
-  { id: 'rate_b2b_inter', orderType: 'B2B', zoneType: 'INTER', basePrice: 250.0, baseWeightKg: 5.0, perKgRate: 25.0,  codSurchargeFlat: 100.0, codSurchargePct: 2.0 },
-  { id: 'rate_b2c_intra', orderType: 'B2C', zoneType: 'INTRA', basePrice: 50.0,  baseWeightKg: 2.0, perKgRate: 10.0,  codSurchargeFlat: 20.0,  codSurchargePct: 1.5 },
-  { id: 'rate_b2c_inter', orderType: 'B2C', zoneType: 'INTER', basePrice: 120.0, baseWeightKg: 2.0, perKgRate: 20.0,  codSurchargeFlat: 40.0,  codSurchargePct: 3.0 }
+  { id: 'rate_b2b_intra', orderType: 'B2B', zoneType: 'INTRA', basePrice: 100.0, baseWeightKg: 5.0, perKgRate: 15.0,  codSurchargeFlat: 50.0,  codSurchargePct: 1.0, baseDistanceKm: 10, perKmRateDistance: 5 },
+  { id: 'rate_b2b_inter', orderType: 'B2B', zoneType: 'INTER', basePrice: 250.0, baseWeightKg: 5.0, perKgRate: 25.0,  codSurchargeFlat: 100.0, codSurchargePct: 2.0, baseDistanceKm: 15, perKmRateDistance: 10 },
+  { id: 'rate_b2c_intra', orderType: 'B2C', zoneType: 'INTRA', basePrice: 50.0,  baseWeightKg: 2.0, perKgRate: 10.0,  codSurchargeFlat: 20.0,  codSurchargePct: 1.5, baseDistanceKm: 5, perKmRateDistance: 3 },
+  { id: 'rate_b2c_inter', orderType: 'B2C', zoneType: 'INTER', basePrice: 120.0, baseWeightKg: 2.0, perKgRate: 20.0,  codSurchargeFlat: 40.0,  codSurchargePct: 3.0, baseDistanceKm: 10, perKmRateDistance: 6 }
 ];
 
 const mockAgents = [
@@ -125,6 +125,27 @@ describe('calculateDeliveryCharge() — B2B Inter-zone', () => {
   it('classifies as INTER zone', ()      => expect(result.zoneType).toBe('INTER'));
   it('delivery charge is ₹325.00', ()   => expect(result.deliveryCharge).toBe(325.0));
 });
+
+describe('calculateDeliveryCharge() — B2C Inter-zone with extra distance', () => {
+  // B2C Inter-zone: basePrice = 120.0, baseWeight = 2kg, baseDistance = 10km, perKmRateDistance = 6.
+  // Weight 1.5kg (no extra weight). Distance = 200km.
+  // Extra distance = 190km @ 6/km = 1140.0. Total delivery charge = 120.0 + 1140.0 = 1260.0.
+  // Prepaid: cod = 0, total = 1260.0.
+  const params = {
+    ...baseParams,
+    dropLat: 18.5200 + 2.0, dropLng: 73.8560 + 0.0, // >200km away
+    length: 10, width: 10, height: 10,
+    actualWeight: 1.5, orderType: 'B2C', paymentType: 'Prepaid'
+  };
+  let result;
+  beforeAll(() => { result = calculateDeliveryCharge(params); });
+
+  it('calculates extra distance charge', () => {
+    expect(result.distanceCharge).toBeGreaterThan(1000);
+    expect(result.totalCharge).toBe(result.deliveryCharge);
+  });
+});
+
 
 describe('calculateDeliveryCharge() — Negative cases', () => {
   it('throws on zero length', () => {

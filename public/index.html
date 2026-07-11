@@ -23,20 +23,16 @@
   <!-- ARIA Live Region for Toast Notifications (Screen Readers) -->
   <div id="toast-live-region" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
-  <!-- ================= AWS SIGN-IN PAGE (DEFAULT STATE) ================= -->
+  <!-- ================= LASTMILE SIGN-IN PAGE (DEFAULT STATE) ================= -->
   <div id="login-container" class="aws-login-page">
     <div class="aws-login-left">
       <div class="aws-logo-box">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="aws-svg-logo">
-          <path d="M60.2,56.7c-5.7,4.3-13.6,6.3-21,6.3c-10.9,0-20.9-4.2-26.6-11.4c-1.3-1.6-0.2-2.9,1.7-1.8c7.3,4.4,16.5,6.9,25.9,6.9 c6.9,0,14.6-1.6,20.8-5c1.7-1,2.9,0.5,1.2,2L60.2,56.7z" fill="#FF9900"/>
-          <path d="M62.6,50.1c-0.8-1.1-2.4-2.8-3.4-1.9c-0.9,0.9,0.3,2.4,0.9,3.3c0.8,1.2,1.8,2.7,2.8,3.9c0.3,0.3,0.6,0.3,0.7-0.1 c0.5-1.5,1.2-3.8,1.4-5.3c0.2-1.3-1-1.3-1.7-1.1C63.1,49.2,62.8,49.8,62.6,50.1z" fill="#FF9900"/>
-          <path d="M57.4,32.7c-3-3.6-7.8-5.8-13.2-5.8c-10.3,0-17.1,7.2-17.1,16.2c0,9.3,7.6,15.6,17.4,15.6c4.6,0,9-1.9,11.8-4.5V47.5 c0-6.1-3.6-9.1-9.6-9.1c-4.4,0-8.8,2.3-11.1,4.5c-0.5,0.5-0.9,0.1-0.7-0.4l1.3-3c0.2-0.5,0.7-0.7,1.2-1c2.8-2.1,7.6-3.8,12.3-3.8 c9.9,0,15.6,5.3,15.6,15.2v14.4c0,0.8,0.4,1.2,1,0.7c0.8-0.7,2.2-2.1,3-3c0.5-0.5,0.9-0.2,0.9,0.5v1.2c0,0.8-0.4,1.4-1,2 c-1.6,1.6-3.8,3.6-5.8,5c-1,0.7-1.9,0.1-1.9-1.1v-2c-3.1,3-7.9,4.8-13.1,4.8C30.4,72.7,19,64.2,19,53.2c0-11,10.2-21,24.9-21 c6.3,0,11.9,2.6,14.6,6c0.3,0.4,0.1,0.9-0.3,1l-2,1.2C55.9,34.5,57.7,33,57.4,32.7z" fill="#232F3E"/>
-        </svg>
-        <span class="aws-logo-ext">logistics</span>
+        <div class="logo-icon" style="margin-right: 0.5rem; background: linear-gradient(135deg, var(--aws-orange), #ffb84d);"><i data-lucide="truck"></i></div>
+        <span class="aws-logo-ext" style="font-weight: 700; font-size: 1.35rem; color: var(--aws-text-dark); letter-spacing: -0.5px;">LastMile</span>
       </div>
 
       <div class="aws-signin-card">
-        <h2 class="aws-card-title">IAM user sign in</h2>
+        <h2 class="aws-card-title">Sign in to LastMile</h2>
         
         <div class="aws-info-alert">
           <i data-lucide="info"></i>
@@ -48,9 +44,9 @@
           </div>
         </div>
 
-        <form id="aws-login-form" class="booking-form" aria-label="IAM Sign In Form" novalidate>
+        <form id="aws-login-form" class="booking-form" aria-label="Sign In Form" novalidate>
           <div class="aws-form-group">
-            <label for="login-email">IAM username or Email address</label>
+            <label for="login-email">Username or Email address</label>
             <input type="text" id="login-email" placeholder="username or email" required
                    autocomplete="username" aria-required="true">
           </div>

@@ -471,7 +471,6 @@ function populateAdminFilters() {
   agentFilter.value = prevAgent;
 }
 
-// Render Rate Cards Editor Grid
 function renderRateCardsEditor() {
   const container = document.getElementById('rates-editor-container');
   if (!container) return;
@@ -506,12 +505,22 @@ function renderRateCardsEditor() {
             <input type="number" step="1" name="codSurchargeFlat" value="${rc.codSurchargeFlat}">
           </div>
         </div>
-        <div class="form-row">
+        <div class="rate-inputs-row">
           <div class="form-group">
             <label>COD Percentage (%)</label>
             <input type="number" step="0.1" name="codSurchargePct" value="${rc.codSurchargePct}">
           </div>
-          <button type="submit" class="btn btn-secondary btn-small" style="align-self: flex-end; height: 32px;">
+          <div class="form-group">
+            <label>Base Distance (km)</label>
+            <input type="number" step="0.1" name="baseDistanceKm" value="${rc.baseDistanceKm || 10}">
+          </div>
+        </div>
+        <div class="rate-inputs-row">
+          <div class="form-group">
+            <label>Per Km (Distance) (₹)</label>
+            <input type="number" step="0.1" name="perKmRateDistance" value="${rc.perKmRateDistance || 5}">
+          </div>
+          <button type="submit" class="btn btn-secondary btn-small" style="align-self: flex-end; height: 32px; width: 100%;">
             <i data-lucide="save"></i> Save Rates
           </button>
         </div>
@@ -532,7 +541,9 @@ function renderRateCardsEditor() {
         baseWeightKg: parseFloat(formData.get('baseWeightKg')),
         perKgRate: parseFloat(formData.get('perKgRate')),
         codSurchargeFlat: parseFloat(formData.get('codSurchargeFlat')),
-        codSurchargePct: parseFloat(formData.get('codSurchargePct'))
+        codSurchargePct: parseFloat(formData.get('codSurchargePct')),
+        baseDistanceKm: parseFloat(formData.get('baseDistanceKm')),
+        perKmRateDistance: parseFloat(formData.get('perKmRateDistance'))
       };
 
       try {
@@ -1086,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Clear tab-isolated authentication state
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('user');
-      showToast('Signed out of AWS Logistics successfully');
+      showToast('Signed out of LastMile Logistics successfully');
       showLoginScreen();
     } catch (error) {}
   });

@@ -105,8 +105,15 @@ function calculateDeliveryCharge(params) {
   const baseWeightKg = rateCard.baseWeightKg;
   const perKgRate = rateCard.perKgRate;
 
+  // Distance charge logic
+  const baseDistanceKm = rateCard.baseDistanceKm != null ? rateCard.baseDistanceKm : 10;
+  const perKmRateDistance = rateCard.perKmRateDistance != null ? rateCard.perKmRateDistance : 5;
+  const distance = getHaversineDistance(pickupLat, pickupLng, dropLat, dropLng);
+  const extraDistance = Math.max(0, distance - baseDistanceKm);
+  const distanceCharge = extraDistance * perKmRateDistance;
+
   const extraWeight = Math.max(0, billingWeight - baseWeightKg);
-  const deliveryCharge = basePrice + (extraWeight * perKgRate);
+  const deliveryCharge = basePrice + (extraWeight * perKgRate) + distanceCharge;
 
   // 5. COD Surcharge (if applicable)
   let codCharge = 0;
@@ -119,6 +126,7 @@ function calculateDeliveryCharge(params) {
   // Round values to 2 decimal places
   const roundedVolumetricWeight = Math.round(volumetricWeight * 100) / 100;
   const roundedBillingWeight = Math.round(billingWeight * 100) / 100;
+  const roundedDistanceCharge = Math.round(distanceCharge * 100) / 100;
   const roundedDeliveryCharge = Math.round(deliveryCharge * 100) / 100;
   const roundedCodCharge = Math.round(codCharge * 100) / 100;
   const totalCharge = Math.round((roundedDeliveryCharge + roundedCodCharge) * 100) / 100;
@@ -129,6 +137,7 @@ function calculateDeliveryCharge(params) {
     zoneType,
     volumetricWeight: roundedVolumetricWeight,
     billingWeight: roundedBillingWeight,
+    distanceCharge: roundedDistanceCharge,
     deliveryCharge: roundedDeliveryCharge,
     codCharge: roundedCodCharge,
     totalCharge,

@@ -1198,8 +1198,8 @@ html, body {
 /* Rate Card Settings */
 .rate-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
 }
 
 .rate-editor-card {

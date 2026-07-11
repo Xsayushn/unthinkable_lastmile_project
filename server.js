@@ -105,7 +105,7 @@ app.use('/api/', apiLimiter);
 
 // ── Static File Serving ───────────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '1h',
+  maxAge: 0,
   etag: true
 }));
 

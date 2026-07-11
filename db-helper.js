@@ -1,4 +1,4 @@
-const fs   = require('fs');
+const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
@@ -94,26 +94,24 @@ async function seedDatabase() {
 
   console.log('Seeding database with Indian standards and Pune NCR locations...');
 
-  const salt           = bcrypt.genSaltSync(10);
+  const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync('tracker123', salt);
-  const adminPassword  = bcrypt.hashSync('admin123', salt);
-  const custPassword   = bcrypt.hashSync('customer123', salt);
+  const adminPassword = bcrypt.hashSync('admin123', salt);
+  const custPassword = bcrypt.hashSync('customer123', salt);
 
   db.users = [
-    { id: 'usr_admin',  name: 'System Admin',           email: 'admin@tracker.com',    passwordHash: adminPassword,  role: 'admin',    createdAt: new Date().toISOString() },
-    { id: 'usr_cust1',  name: 'Tata Logistics (B2B)',   email: 'customer@tracker.com', passwordHash: custPassword,   role: 'customer', createdAt: new Date().toISOString() },
-    { id: 'usr_cust2',  name: 'Aditi Sharma (B2C)',     email: 'aditi@tracker.com',    passwordHash: hashedPassword, role: 'customer', createdAt: new Date().toISOString() },
+    { id: 'usr_admin', name: 'System Admin', email: 'admin@tracker.com', passwordHash: adminPassword, role: 'admin', createdAt: new Date().toISOString() },
+    { id: 'usr_cust1', name: 'Tata Logistics (B2B)', email: 'customer@tracker.com', passwordHash: custPassword, role: 'customer', createdAt: new Date().toISOString() },
+    { id: 'usr_cust2', name: 'Aditi Sharma (B2C)', email: 'aditi@tracker.com', passwordHash: hashedPassword, role: 'customer', createdAt: new Date().toISOString() },
     { id: 'usr_agent1', name: 'Ramesh Kumar (Pune Central)', email: 'agent1@tracker.com', passwordHash: hashedPassword, role: 'agent', createdAt: new Date().toISOString() },
     { id: 'usr_agent2', name: 'Suresh Singh (Hinjawadi/West)', email: 'agent2@tracker.com', passwordHash: hashedPassword, role: 'agent', createdAt: new Date().toISOString() },
-    { id: 'usr_agent3', name: 'Amit Patel (Offline)',   email: 'agent3@tracker.com',   passwordHash: hashedPassword, role: 'agent',    createdAt: new Date().toISOString() },
-    { id: 'usr_agent4', name: 'Ayush (Online)',          email: 'agent4@tracker.com',   passwordHash: hashedPassword, role: 'agent',    createdAt: new Date().toISOString() }
+    { id: 'usr_agent3', name: 'Amit Patel (Offline)', email: 'agent3@tracker.com', passwordHash: hashedPassword, role: 'agent', createdAt: new Date().toISOString() }
   ];
 
   db.agents = [
     { id: 'agt_1', userId: 'usr_agent1', name: 'Ramesh Kumar', status: 'AVAILABLE', currentLat: 18.5200, currentLng: 73.8560 },
     { id: 'agt_2', userId: 'usr_agent2', name: 'Suresh Singh', status: 'AVAILABLE', currentLat: 18.5910, currentLng: 73.7380 },
-    { id: 'agt_3', userId: 'usr_agent3', name: 'Amit Patel',   status: 'OFFLINE',   currentLat: 18.5089, currentLng: 73.9259 },
-    { id: 'agt_4', userId: 'usr_agent4', name: 'Ayush',        status: 'AVAILABLE', currentLat: 18.5089, currentLng: 73.9259 }
+    { id: 'agt_3', userId: 'usr_agent3', name: 'Amit Patel', status: 'OFFLINE', currentLat: 18.5089, currentLng: 73.9259 }
   ];
 
   db.zones = [
@@ -130,10 +128,10 @@ async function seedDatabase() {
   ];
 
   db.rateCards = [
-    { id: 'rate_b2b_intra', orderType: 'B2B', zoneType: 'INTRA', basePrice: 100.0, baseWeightKg: 5.0, perKgRate: 15.0, codSurchargeFlat: 50.0,  codSurchargePct: 1.0 },
-    { id: 'rate_b2b_inter', orderType: 'B2B', zoneType: 'INTER', basePrice: 250.0, baseWeightKg: 5.0, perKgRate: 25.0, codSurchargeFlat: 100.0, codSurchargePct: 2.0 },
-    { id: 'rate_b2c_intra', orderType: 'B2C', zoneType: 'INTRA', basePrice: 50.0,  baseWeightKg: 2.0, perKgRate: 10.0, codSurchargeFlat: 20.0,  codSurchargePct: 1.5 },
-    { id: 'rate_b2c_inter', orderType: 'B2C', zoneType: 'INTER', basePrice: 120.0, baseWeightKg: 2.0, perKgRate: 20.0, codSurchargeFlat: 40.0,  codSurchargePct: 3.0 }
+    { id: 'rate_b2b_intra', orderType: 'B2B', zoneType: 'INTRA', basePrice: 100.0, baseWeightKg: 5.0, perKgRate: 15.0, codSurchargeFlat: 50.0, codSurchargePct: 1.0, baseDistanceKm: 10, perKmRateDistance: 5 },
+    { id: 'rate_b2b_inter', orderType: 'B2B', zoneType: 'INTER', basePrice: 250.0, baseWeightKg: 5.0, perKgRate: 25.0, codSurchargeFlat: 100.0, codSurchargePct: 2.0, baseDistanceKm: 15, perKmRateDistance: 10 },
+    { id: 'rate_b2c_intra', orderType: 'B2C', zoneType: 'INTRA', basePrice: 50.0, baseWeightKg: 2.0, perKgRate: 10.0, codSurchargeFlat: 20.0, codSurchargePct: 1.5, baseDistanceKm: 5, perKmRateDistance: 3 },
+    { id: 'rate_b2c_inter', orderType: 'B2C', zoneType: 'INTER', basePrice: 120.0, baseWeightKg: 2.0, perKgRate: 20.0, codSurchargeFlat: 40.0, codSurchargePct: 3.0, baseDistanceKm: 10, perKmRateDistance: 6 }
   ];
 
   db.orders = [];
