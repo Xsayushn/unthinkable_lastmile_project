@@ -114,7 +114,7 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
-// Initialize Leaflet Map (centered in New Delhi Connaught Place)
+// Initialize Leaflet Map (centered in Pune Central)
 function initMap() {
   if (map) return;
 
@@ -189,7 +189,7 @@ function initMap() {
   });
 }
 
-// Redraw Delhi geofence circles
+// Redraw Pune geofence circles
 function drawZones() {
   zoneCircles.forEach(circle => map.removeLayer(circle));
   zoneCircles = [];
@@ -561,20 +561,24 @@ function renderZonesList() {
   if (!tbody) return;
 
   tbody.innerHTML = '';
-  zones.forEach(zone => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong>${escapeHTML(zone.name)}</strong><br><span style="font-size:0.72rem;color:var(--text-muted);">${escapeHTML(zone.description || '')}</span></td>
-      <td>${zone.lat.toFixed(4)}, ${zone.lng.toFixed(4)}</td>
-      <td>${zone.radiusKm} km</td>
-      <td>
-        <button class="btn btn-danger btn-small btn-delete-zone" data-id="${zone.id}">
-          <i data-lucide="trash-2"></i> Delete
-        </button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+  if (zones.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="color: var(--text-muted); padding: 1rem;">No zones registered in the system. Add one above.</td></tr>';
+  } else {
+    zones.forEach(zone => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${escapeHTML(zone.name)}</strong><br><span style="font-size:0.72rem;color:var(--text-muted);">${escapeHTML(zone.description || '')}</span></td>
+        <td>${zone.lat.toFixed(4)}, ${zone.lng.toFixed(4)}</td>
+        <td>${zone.radiusKm} km</td>
+        <td>
+          <button class="btn btn-danger btn-small btn-delete-zone" data-id="${zone.id}">
+            <i data-lucide="trash-2"></i> Delete
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
 
   lucide.createIcons();
 
@@ -737,26 +741,30 @@ function renderOrders() {
   const agentTable = document.querySelector('#admin-agents-table tbody');
   if (agentTable && currentUser?.role === 'admin') {
     agentTable.innerHTML = '';
-    agents.forEach(a => {
-      const statusBadge = a.status === 'AVAILABLE' 
-        ? '<span class="badge badge-delivered">AVAILABLE</span>' 
-        : (a.status === 'BUSY' ? '<span class="badge badge-intransit">BUSY</span>' : '<span class="badge badge-failed">OFFLINE</span>');
-        
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><strong>${a.id}</strong></td>
-        <td>${a.name}</td>
-        <td>${statusBadge}</td>
-        <td>${a.currentLat.toFixed(6)}</td>
-        <td>${a.currentLng.toFixed(6)}</td>
-        <td>
-          <button class="btn btn-secondary btn-small btn-view-agent-on-map" data-lat="${a.currentLat}" data-lng="${a.currentLng}">
-            <i data-lucide="map-pin"></i> Center Map
-          </button>
-        </td>
-      `;
-      agentTable.appendChild(tr);
-    });
+    if (agents.length === 0) {
+      agentTable.innerHTML = '<tr><td colspan="6" class="text-center" style="color: var(--text-muted); padding: 1rem;">No delivery agents registered in the registry.</td></tr>';
+    } else {
+      agents.forEach(a => {
+        const statusBadge = a.status === 'AVAILABLE' 
+          ? '<span class="badge badge-delivered">AVAILABLE</span>' 
+          : (a.status === 'BUSY' ? '<span class="badge badge-intransit">BUSY</span>' : '<span class="badge badge-failed">OFFLINE</span>');
+          
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${a.id}</strong></td>
+          <td>${a.name}</td>
+          <td>${statusBadge}</td>
+          <td>${a.currentLat.toFixed(6)}</td>
+          <td>${a.currentLng.toFixed(6)}</td>
+          <td>
+            <button class="btn btn-secondary btn-small btn-view-agent-on-map" data-lat="${a.currentLat}" data-lng="${a.currentLng}">
+              <i data-lucide="map-pin"></i> Center Map
+            </button>
+          </td>
+        `;
+        agentTable.appendChild(tr);
+      });
+    }
   }
 
   lucide.createIcons();
@@ -1064,6 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (view === 'customer') {
         setPinMode('pickup');
+        updatePricingEstimate();
       } else {
         setPinMode(null);
       }

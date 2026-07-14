@@ -45,7 +45,7 @@ Use these credentials on the AWS-style sign-in screen to access different platfo
 |---|---|---|---|
 | **Admin** | `admin` or `admin@tracker.com` | `admin123` | Control panel, switch active views, edit rate cards, and inspect system logs |
 | **Customer (B2B)** | `customer` or `customer@tracker.com` | `customer123` | Tata Logistics view: book deliveries, calculate rates, and view live timeline tracking |
-| **Customer (B2C)** | `aditi` or `aditi@tracker.com` | `tracker123` | Aditi Sharma view: place orders and reschedule failed delivery attempts |
+| **Customer (B2C)** | `ayush` or `ayush@tracker.com` | `tracker123` | Ayush view: place orders and reschedule failed delivery attempts |
 | **Agent 1** | `agent1` or `agent1@tracker.com` | `tracker123` | Ramesh Kumar view: mark orders as Picked Up, In Transit, and update simulator GPS coordinates |
 | **Agent 2** | `agent2` or `agent2@tracker.com` | `tracker123` | Suresh Singh view: view Hinjawadi queue and mark orders Delivered or Failed |
 

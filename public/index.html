@@ -105,6 +105,7 @@
           <h1>LastMile</h1>
           <span>Pune Operations</span>
         </div>
+      </div>
       <!-- Workspace Switcher (visible for Admin to directly access all 3 roles) -->
       <div id="admin-workspace-switcher" class="workspace-switcher" style="display: none;">
         <span class="switcher-label">Active Workspace:</span>
@@ -400,16 +401,16 @@
                   <form id="admin-zone-form" class="simple-form">
                     <div class="form-group">
                       <label for="zone-name">Zone Name</label>
-                      <input type="text" id="zone-name" placeholder="e.g. Zone C (Delhi South)" required>
+                      <input type="text" id="zone-name" placeholder="e.g. Zone C (Pune East)" required>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
                         <label for="zone-lat">Center Latitude</label>
-                        <input type="number" step="0.0001" id="zone-lat" value="28.5355" required>
+                        <input type="number" step="0.0001" id="zone-lat" value="18.5204" required>
                       </div>
                       <div class="form-group">
                         <label for="zone-lng">Center Longitude</label>
-                        <input type="number" step="0.0001" id="zone-lng" value="77.3910" required>
+                        <input type="number" step="0.0001" id="zone-lng" value="73.8567" required>
                       </div>
                     </div>
                     <div class="form-group">
@@ -502,10 +503,10 @@
               
               <div class="agent-location-display">
                 <div class="location-coord">
-                  <span>Lat:</span> <strong id="agent-lat-display">28.6300</strong>
+                  <span>Lat:</span> <strong id="agent-lat-display">18.5204</strong>
                 </div>
                 <div class="location-coord">
-                  <span>Lng:</span> <strong id="agent-lng-display">77.2200</strong>
+                  <span>Lng:</span> <strong id="agent-lng-display">73.8567</strong>
                 </div>
               </div>
               
@@ -539,7 +540,7 @@
             <button class="close-btn" id="btn-close-history" aria-label="Close order history panel">&times;</button>
           </div>
           <div class="tracking-summary-card">
-            <div class="summary-line">Route: <span id="history-route-text">New Delhi to Noida</span></div>
+            <div class="summary-line">Route: <span id="history-route-text">Pune Central → Hinjawadi</span></div>
             <div class="summary-line">Status: <span class="badge" id="history-status-badge">Placed</span></div>
           </div>
           <div class="timeline" id="history-timeline-events">
