@@ -1,4 +1,4 @@
-# Last-Mile Delivery Tracker (Indian Standard Edition - Pune)
+# Last-Mile Delivery Tracker
 
 A modern, responsive delivery management and tracking platform built for Pune operations. This project implements role-based dashboards (Customer, Admin, Delivery Agent), circular zone mapping, dynamic volumetric weight calculations, B2B/B2C rate card config, and automated nearest-agent assignment.
 
@@ -30,7 +30,7 @@ The application is also deployed and accessible live at:
 
 
 ### Running Automated Pricing Tests
-We have built an automated test runner for the logistics and pricing formulas scaled to Rupees and Pune geofences:
+We have built an automated test runner for the logistics and pricing formulas scaled for Pune geofences:
 ```bash
 npm test
 ```
