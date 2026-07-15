@@ -123,8 +123,8 @@ function initMap() {
     attributionControl: false
   }).setView([18.5204, 73.8567], 12);
 
-  // CartoDB Positron tile provider (Light Theme)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  // CartoDB Dark Matter tile provider
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19
   }).addTo(map);
 
