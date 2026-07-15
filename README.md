@@ -73,6 +73,7 @@ The application uses a lightweight local JSON database (`db.json`) seeded on sta
 - `email` (String): User's email.
 - `passwordHash` (String): Salted password hash.
 - `role` (String): Role of user (`admin` | `customer` | `agent`).
+- `isVerified` (Boolean): User account verification status (defaults to `true` for Customers, `false` for Agents).
 - `createdAt` (String): Timestamp.
 
 ### 2. `AgentProfile` Schema
@@ -108,7 +109,7 @@ The application uses a lightweight local JSON database (`db.json`) seeded on sta
 Authentication is supported via HTTP-Only session-isolated tokens.
 
 ### Authentication
-* `POST /api/auth/register`: Register new user.
+* `POST /api/auth/register`: Register new user (Customers default to verified, Agents default to unverified and require admin approval).
 * `POST /api/auth/login`: Authenticate and return JWT token.
 * `POST /api/auth/logout`: Clear token.
 * `GET /api/auth/me`: Retrieve currently logged-in user profile.
@@ -135,7 +136,8 @@ Authentication is supported via HTTP-Only session-isolated tokens.
 * `POST /api/orders/:id/reschedule`: Capture reschedule date. Resets status, frees old agent, and triggers auto-assignment to a new agent.
 
 ### Delivery Agents
-* `GET /api/agents`: Retrieve all agents.
+* `GET /api/agents`: Retrieve all agents (returns all agents with `isVerified` status for Admins, and only verified agents for Customers/Agents).
+* `POST /api/agents/:id/verify` (Admin Only): Verify/Approve a pending agent account.
 * `POST /api/agents/:id/location`: Update active agent GPS coordinates and duty availability status (`AVAILABLE`, `BUSY`, `OFFLINE`).
 
 ### Notifications
