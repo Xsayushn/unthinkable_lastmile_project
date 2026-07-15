@@ -249,7 +249,8 @@ body {
   color: #545b64;
 }
 
-.aws-form-group input {
+.aws-form-group input,
+.aws-form-group select {
   padding: 0.45rem 0.65rem;
   font-size: 0.88rem;
   border: 1px solid #aab7c4;
@@ -261,7 +262,8 @@ body {
   transition: var(--transition);
 }
 
-.aws-form-group input:focus {
+.aws-form-group input:focus,
+.aws-form-group select:focus {
   border-color: #0073bb;
   box-shadow: 0 0 0 1px #0073bb;
 }

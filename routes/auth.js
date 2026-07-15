@@ -65,6 +65,7 @@ router.post('/register', authLimiter, (req, res) => {
     email,
     passwordHash,
     role: userRole,
+    isVerified: userRole !== 'agent',
     createdAt: new Date().toISOString()
   };
 
@@ -83,11 +84,18 @@ router.post('/register', authLimiter, (req, res) => {
 
   writeDb(db);
 
-  issueSession(res, newUser);
-  res.status(201).json({
-    message: 'User registered successfully.',
-    user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role }
-  });
+  if (userRole === 'agent') {
+    res.status(201).json({
+      message: 'Agent registered successfully. Pending administrator verification.',
+      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role }
+    });
+  } else {
+    issueSession(res, newUser);
+    res.status(201).json({
+      message: 'User registered successfully.',
+      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role }
+    });
+  }
 });
 
 // POST /api/auth/login
@@ -118,6 +126,10 @@ router.post('/login', authLimiter, (req, res) => {
 
   if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
     return res.status(400).json({ error: 'Invalid email/username or password.' });
+  }
+
+  if (user.role === 'agent' && user.isVerified === false) {
+    return res.status(403).json({ error: 'Agent account is pending admin verification.' });
   }
 
   issueSession(res, user);

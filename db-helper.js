@@ -100,12 +100,12 @@ async function seedDatabase() {
   const custPassword = bcrypt.hashSync('customer123', salt);
 
   db.users = [
-    { id: 'usr_admin', name: 'System Admin', email: 'admin@tracker.com', passwordHash: adminPassword, role: 'admin', createdAt: new Date().toISOString() },
-    { id: 'usr_cust1', name: 'Tata Logistics (B2B)', email: 'customer@tracker.com', passwordHash: custPassword, role: 'customer', createdAt: new Date().toISOString() },
-    { id: 'usr_cust2', name: 'Ayush (B2C)', email: 'ayush@tracker.com', passwordHash: hashedPassword, role: 'customer', createdAt: new Date().toISOString() },
-    { id: 'usr_agent1', name: 'Ramesh Kumar (Pune Central)', email: 'agent1@tracker.com', passwordHash: hashedPassword, role: 'agent', createdAt: new Date().toISOString() },
-    { id: 'usr_agent2', name: 'Suresh Singh (Hinjawadi/West)', email: 'agent2@tracker.com', passwordHash: hashedPassword, role: 'agent', createdAt: new Date().toISOString() },
-    { id: 'usr_agent3', name: 'Amit Patel (Offline)', email: 'agent3@tracker.com', passwordHash: hashedPassword, role: 'agent', createdAt: new Date().toISOString() }
+    { id: 'usr_admin', name: 'System Admin', email: 'admin@tracker.com', passwordHash: adminPassword, role: 'admin', isVerified: true, createdAt: new Date().toISOString() },
+    { id: 'usr_cust1', name: 'Tata Logistics (B2B)', email: 'customer@tracker.com', passwordHash: custPassword, role: 'customer', isVerified: true, createdAt: new Date().toISOString() },
+    { id: 'usr_cust2', name: 'Ayush (B2C)', email: 'ayush@tracker.com', passwordHash: hashedPassword, role: 'customer', isVerified: true, createdAt: new Date().toISOString() },
+    { id: 'usr_agent1', name: 'Ramesh Kumar (Pune Central)', email: 'agent1@tracker.com', passwordHash: hashedPassword, role: 'agent', isVerified: true, createdAt: new Date().toISOString() },
+    { id: 'usr_agent2', name: 'Suresh Singh (Hinjawadi/West)', email: 'agent2@tracker.com', passwordHash: hashedPassword, role: 'agent', isVerified: true, createdAt: new Date().toISOString() },
+    { id: 'usr_agent3', name: 'Amit Patel (Offline)', email: 'agent3@tracker.com', passwordHash: hashedPassword, role: 'agent', isVerified: true, createdAt: new Date().toISOString() }
   ];
 
   db.agents = [

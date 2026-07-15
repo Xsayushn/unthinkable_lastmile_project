@@ -31,41 +31,93 @@
         <span class="aws-logo-ext" style="font-weight: 700; font-size: 1.35rem; color: var(--aws-text-dark); letter-spacing: -0.5px;">LastMile</span>
       </div>
 
-      <div class="aws-signin-card">
-        <h2 class="aws-card-title">Sign in to LastMile</h2>
-        
-        <div class="aws-info-alert">
-          <i data-lucide="info"></i>
-          <div>
-            <strong>Demo Accounts:</strong><br>
-            • Admin: <code>admin@tracker.com</code> / <code>admin123</code><br>
-            • Customer: <code>customer@tracker.com</code> / <code>customer123</code><br>
-            • Agent: <code>agent1@tracker.com</code> / <code>tracker123</code>
-          </div>
-        </div>
-
-        <form id="aws-login-form" class="booking-form" aria-label="Sign In Form" novalidate>
-          <div class="aws-form-group">
-            <label for="login-email">Username or Email address</label>
-            <input type="text" id="login-email" placeholder="username or email" required
-                   autocomplete="username" aria-required="true">
-          </div>
-
-          <div class="aws-form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" required
-                   autocomplete="current-password" aria-required="true">
-          </div>
-
-          <div class="aws-form-group-row">
-            <div class="aws-checkbox-container">
-              <input type="checkbox" id="aws-show-password" aria-controls="login-password">
-              <label for="aws-show-password">Show Password</label>
+      <div class="aws-signin-card" id="aws-auth-card">
+        <!-- Sign In Section -->
+        <div id="signin-section">
+          <h2 class="aws-card-title">Sign in to LastMile</h2>
+          
+          <div class="aws-info-alert">
+            <i data-lucide="info"></i>
+            <div>
+              <strong>Demo Accounts:</strong><br>
+              • Admin: <code>admin@tracker.com</code> / <code>admin123</code><br>
+              • Customer: <code>customer@tracker.com</code> / <code>customer123</code><br>
+              • Agent: <code>agent1@tracker.com</code> / <code>tracker123</code>
             </div>
           </div>
 
-          <button type="submit" class="btn-aws-primary" style="margin-top: 0.5rem;">Sign in</button>
-        </form>
+          <form id="aws-login-form" class="booking-form" aria-label="Sign In Form" novalidate>
+            <div class="aws-form-group">
+              <label for="login-email">Username or Email address</label>
+              <input type="text" id="login-email" placeholder="username or email" required
+                     autocomplete="username" aria-required="true">
+            </div>
+
+            <div class="aws-form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" required
+                     autocomplete="current-password" aria-required="true">
+            </div>
+
+            <div class="aws-form-group-row">
+              <div class="aws-checkbox-container">
+                <input type="checkbox" id="aws-show-password" aria-controls="login-password">
+                <label for="aws-show-password">Show Password</label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-aws-primary" style="margin-top: 0.5rem;">Sign in</button>
+          </form>
+
+          <div class="aws-divider"></div>
+
+          <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem;">
+            <span style="color: var(--text-muted);">New to LastMile?</span>
+            <a href="#" id="link-show-signup" class="aws-link" style="margin-left: 5px; font-weight: 600;">Create an account</a>
+          </div>
+        </div>
+
+        <!-- Sign Up Section (Hidden by default) -->
+        <div id="signup-section" style="display: none;">
+          <h2 class="aws-card-title">Create your Account</h2>
+
+          <form id="aws-register-form" class="booking-form" aria-label="Sign Up Form" novalidate>
+            <div class="aws-form-group">
+              <label for="register-name">Full Name</label>
+              <input type="text" id="register-name" placeholder="John Doe" required
+                     autocomplete="name" aria-required="true">
+            </div>
+
+            <div class="aws-form-group">
+              <label for="register-email">Email address</label>
+              <input type="email" id="register-email" placeholder="email@example.com" required
+                     autocomplete="email" aria-required="true">
+            </div>
+
+            <div class="aws-form-group">
+              <label for="register-password">Password (min 6 characters)</label>
+              <input type="password" id="register-password" required
+                     autocomplete="new-password" aria-required="true">
+            </div>
+
+            <div class="aws-form-group">
+              <label for="register-role">Register As</label>
+              <select id="register-role" required>
+                <option value="customer" selected>Customer</option>
+                <option value="agent">Delivery Agent (Requires Verification)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-aws-primary" style="margin-top: 0.5rem;">Create Account</button>
+          </form>
+
+          <div class="aws-divider"></div>
+
+          <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem;">
+            <span style="color: var(--text-muted);">Already have an account?</span>
+            <a href="#" id="link-show-signin" class="aws-link" style="margin-left: 5px; font-weight: 600;">Sign in</a>
+          </div>
+        </div>
       </div>
 
       <footer class="aws-footer">

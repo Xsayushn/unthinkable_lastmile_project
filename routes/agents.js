@@ -12,7 +12,45 @@ router.use(authenticateToken);
 // GET /api/agents — List all agents
 router.get('/', (req, res) => {
   const db = readDb();
-  res.json(db.agents);
+  if (req.user && req.user.role === 'admin') {
+    const agentsWithVerify = db.agents.map(a => {
+      const u = db.users.find(usr => usr.id === a.userId);
+      return {
+        ...a,
+        isVerified: u ? u.isVerified !== false : true
+      };
+    });
+    return res.json(agentsWithVerify);
+  } else {
+    const verifiedAgents = db.agents.filter(a => {
+      const u = db.users.find(usr => usr.id === a.userId);
+      return u ? u.isVerified !== false : true;
+    });
+    return res.json(verifiedAgents);
+  }
+});
+
+// POST /api/agents/:id/verify — Verify/Approve agent (Admin only)
+router.post('/:id/verify', (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access forbidden. Admins only.' });
+  }
+
+  const db = readDb();
+  const agent = db.agents.find(a => a.id === req.params.id);
+  if (!agent) {
+    return res.status(404).json({ error: 'Agent profile not found.' });
+  }
+
+  const user = db.users.find(u => u.id === agent.userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User profile not found.' });
+  }
+
+  user.isVerified = true;
+  writeDb(db);
+
+  res.json({ message: 'Agent verified successfully.', agentId: agent.id });
 });
 
 // GET /api/customers — List customers (Admin only)

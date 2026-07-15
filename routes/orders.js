@@ -303,7 +303,11 @@ router.post('/:id/assign', authenticateToken, requireAdmin, (req, res) => {
   let methodNote = '';
 
   if (auto) {
-    const assignmentResult = findNearestAvailableAgent(order.pickupLat, order.pickupLng, db.agents);
+    const verifiedAgents = db.agents.filter(a => {
+      const u = db.users.find(usr => usr.id === a.userId);
+      return u && u.isVerified !== false;
+    });
+    const assignmentResult = findNearestAvailableAgent(order.pickupLat, order.pickupLng, verifiedAgents);
     if (!assignmentResult) {
       return res.status(400).json({ error: 'No available delivery agents found nearby.' });
     }
@@ -313,6 +317,12 @@ router.post('/:id/assign', authenticateToken, requireAdmin, (req, res) => {
     if (!agentId) return res.status(400).json({ error: 'Please specify an agentId for manual assignment.' });
     selectedAgent = db.agents.find(a => a.id === agentId);
     if (!selectedAgent) return res.status(404).json({ error: 'Agent profile not found.' });
+
+    const selectedAgentUser = db.users.find(u => u.id === selectedAgent.userId);
+    if (selectedAgentUser && selectedAgentUser.isVerified === false) {
+      return res.status(400).json({ error: 'Selected agent is not verified by admin.' });
+    }
+
     if (selectedAgent.status !== 'AVAILABLE') {
       return res.status(400).json({ error: `Selected agent is currently ${selectedAgent.status.toLowerCase()}.` });
     }
@@ -418,7 +428,11 @@ router.post('/:id/reschedule', authenticateToken, (req, res) => {
   sendNotification(db, order, 'Rescheduled');
 
   // Immediately trigger nearest-agent auto-assignment
-  const assignmentResult = findNearestAvailableAgent(order.pickupLat, order.pickupLng, db.agents);
+  const verifiedAgents = db.agents.filter(a => {
+    const u = db.users.find(usr => usr.id === a.userId);
+    return u && u.isVerified !== false;
+  });
+  const assignmentResult = findNearestAvailableAgent(order.pickupLat, order.pickupLng, verifiedAgents);
   if (assignmentResult) {
     const newAgent = assignmentResult.agent;
     order.agentId   = newAgent.id;

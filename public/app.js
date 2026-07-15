@@ -742,24 +742,36 @@ function renderOrders() {
   if (agentTable && currentUser?.role === 'admin') {
     agentTable.innerHTML = '';
     if (agents.length === 0) {
-      agentTable.innerHTML = '<tr><td colspan="6" class="text-center" style="color: var(--text-muted); padding: 1rem;">No delivery agents registered in the registry.</td></tr>';
+      agentTable.innerHTML = '<tr><td colspan="7" class="text-center" style="color: var(--text-muted); padding: 1rem;">No delivery agents registered in the registry.</td></tr>';
     } else {
       agents.forEach(a => {
         const statusBadge = a.status === 'AVAILABLE' 
           ? '<span class="badge badge-delivered">AVAILABLE</span>' 
           : (a.status === 'BUSY' ? '<span class="badge badge-intransit">BUSY</span>' : '<span class="badge badge-failed">OFFLINE</span>');
           
+        const verifyBadge = a.isVerified 
+          ? '<span class="badge badge-delivered">Verified</span>' 
+          : '<span class="badge badge-failed">Pending</span>';
+
+        const verifyButton = !a.isVerified 
+          ? `<button class="btn btn-primary btn-small btn-verify-agent" data-id="${a.id}"><i data-lucide="shield-check"></i> Verify</button>` 
+          : '';
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${a.id}</strong></td>
           <td>${a.name}</td>
           <td>${statusBadge}</td>
+          <td>${verifyBadge}</td>
           <td>${a.currentLat.toFixed(6)}</td>
           <td>${a.currentLng.toFixed(6)}</td>
           <td>
-            <button class="btn btn-secondary btn-small btn-view-agent-on-map" data-lat="${a.currentLat}" data-lng="${a.currentLng}">
-              <i data-lucide="map-pin"></i> Center Map
-            </button>
+            <div style="display: flex; gap: 5px;">
+              ${verifyButton}
+              <button class="btn btn-secondary btn-small btn-view-agent-on-map" data-lat="${a.currentLat}" data-lng="${a.currentLng}">
+                <i data-lucide="map-pin"></i> Center Map
+              </button>
+            </div>
           </td>
         `;
         agentTable.appendChild(tr);
@@ -862,6 +874,17 @@ function setupOrderActionListeners() {
       const lat = parseFloat(btn.dataset.lat);
       const lng = parseFloat(btn.dataset.lng);
       map.setView([lat, lng], 14);
+    });
+  });
+
+  document.querySelectorAll('.btn-verify-agent').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const agentId = btn.dataset.id;
+      try {
+        await apiRequest(`/api/agents/${agentId}/verify`, 'POST');
+        showToast('Agent verified successfully.');
+        refreshAllData();
+      } catch (error) {}
     });
   });
 }
@@ -1080,6 +1103,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Toggle between login and register
+  document.getElementById('link-show-signup').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('signin-section').style.display = 'none';
+    document.getElementById('signup-section').style.display = 'block';
+  });
+
+  document.getElementById('link-show-signin').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('signup-section').style.display = 'none';
+    document.getElementById('signin-section').style.display = 'block';
+  });
+
   // AWS IAM Login Form Submit
   document.getElementById('aws-login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1096,6 +1132,34 @@ document.addEventListener('DOMContentLoaded', () => {
       
       currentUser = data.user;
       renderDashboard();
+    } catch (error) {}
+  });
+
+  // AWS IAM Register Form Submit
+  document.getElementById('aws-register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('register-name').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const role = document.getElementById('register-role').value;
+
+    try {
+      const data = await apiRequest('/api/auth/register', 'POST', { name, email, password, role });
+      showToast(data.message);
+      
+      if (role === 'agent') {
+        // Clear form and go back to sign in
+        document.getElementById('aws-register-form').reset();
+        document.getElementById('signup-section').style.display = 'none';
+        document.getElementById('signin-section').style.display = 'block';
+      } else {
+        // Customer registers and logs in immediately
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('user', JSON.stringify(data.user));
+        
+        currentUser = data.user;
+        renderDashboard();
+      }
     } catch (error) {}
   });
 
