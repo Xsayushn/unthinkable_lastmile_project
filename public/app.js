@@ -571,9 +571,14 @@ function renderZonesList() {
         <td>${zone.lat.toFixed(4)}, ${zone.lng.toFixed(4)}</td>
         <td>${zone.radiusKm} km</td>
         <td>
-          <button class="btn btn-danger btn-small btn-delete-zone" data-id="${zone.id}">
-            <i data-lucide="trash-2"></i> Delete
-          </button>
+          <div style="display: flex; gap: 5px;">
+            <button class="btn btn-secondary btn-small btn-view-zone-on-map" data-lat="${zone.lat}" data-lng="${zone.lng}">
+              <i data-lucide="map-pin"></i> Center Map
+            </button>
+            <button class="btn btn-danger btn-small btn-delete-zone" data-id="${zone.id}">
+              <i data-lucide="trash-2"></i> Delete
+            </button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
@@ -581,6 +586,14 @@ function renderZonesList() {
   }
 
   lucide.createIcons();
+
+  document.querySelectorAll('.btn-view-zone-on-map').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lat = parseFloat(btn.dataset.lat);
+      const lng = parseFloat(btn.dataset.lng);
+      map.setView([lat, lng], 12);
+    });
+  });
 
   document.querySelectorAll('.btn-delete-zone').forEach(btn => {
     btn.addEventListener('click', async () => {
