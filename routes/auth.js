@@ -9,7 +9,10 @@ const { authLimiter } = require('../middleware/rateLimiter');
 const { sanitizeString, validateEmail, validatePassword } = require('../middleware/validate');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'lastmile-secret-key-98765';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('FATAL: JWT_SECRET environment variable is not defined.');
+}
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 // Helper: create and set JWT cookie + return user

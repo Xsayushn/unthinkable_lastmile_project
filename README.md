@@ -57,9 +57,22 @@ A sample environment configuration file `.env.example` is provided in the projec
 
 ```env
 PORT=3000
-JWT_SECRET=lastmile-secret-key-98765
+JWT_SECRET=your_cryptographically_secure_random_jwt_secret_here
+
+# SMTP Configuration for Email Notifications
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your_smtp_username
+SMTP_PASS=your_smtp_password
+SMTP_FROM="Last-Mile Tracker" <noreply@example.com>
 ```
-*(No complex configurations or databases are required; everything runs on local Node.js static serving and file-based JSON storage).*
+
+### Email Integration & Ethereal Fallback
+- If the `SMTP_*` variables are left blank in `.env`, the application automatically provisions a temporary **Ethereal Email** test inbox on startup.
+- It will log a real-time **Ethereal Preview URL** in the console whenever an email notification is generated, enabling you to inspect sent emails instantly without any registration or configuration required!
+- **In test mode (`NODE_ENV=test`)**, real email transmission is automatically bypassed to keep tests offline and fast.
+
+*(No complex databases are required; everything runs on local Node.js static serving and file-based JSON storage).*
 
 ---
 

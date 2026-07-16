@@ -10,6 +10,7 @@ const {
   validateLng,
   validatePositiveNumber
 } = require('../middleware/validate');
+const { sendEmailNotification } = require('../notification-helper');
 
 const router = express.Router();
 
@@ -88,6 +89,13 @@ function sendNotification(db, order, status, notes = '') {
   );
 
   console.log(`[NOTIFICATION] Order #${order.id} (${status}) → ${message}`);
+
+  // Trigger real email notification asynchronously in the background
+  const emailRecipient = order.customerEmail || 'customer@tracker.com';
+  const emailSubject = `Order #${order.id} Update: ${status}`;
+  sendEmailNotification(emailRecipient, emailSubject, message).catch(err => {
+    console.error(`[NOTIFICATION ERROR] Failed to send email for Order #${order.id}:`, err.message);
+  });
 }
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
